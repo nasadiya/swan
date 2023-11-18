@@ -9,8 +9,9 @@
 1. > Install virtual environment :
 `conda create --name WebApp --file spec-file.txt`
 
+2. > pip install QuantLib=1.32
 
-2. > Activate virtual environment :
+3> Activate virtual environment :
 `conda activate WebApp`
 
-3. > To deactivate the environment use `conda deactivate`
+4> To deactivate the environment use `conda deactivate`

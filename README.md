@@ -7,7 +7,7 @@
 
 ### Virtual Environment setup
 1. > Install virtual environment :
-`conda create --name WebApp --file spec-file.txt`
+`conda env create -f environment.yml`
 
 2. > pip install QuantLib=1.32
 

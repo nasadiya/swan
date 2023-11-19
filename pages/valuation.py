@@ -41,12 +41,14 @@ with st.form(key='my-form', clear_on_submit=False):
 if run:
     instruments = make_instruments(r_6m, r_1y, r_2y, r_3y, r_4y)
     swap = calculate_swap(instruments, tenor, fixed_rate, forward_start, nominal)
-
     st.write(pd.DataFrame(data={
-        'Fair Rate':swap.fairRate(),
-        'NPV':swap.NPV()
+        'Fair Rate':[swap.fairRate()],
+        'NPV':[swap.NPV()]
     }))
 
-    leg1 = swap.leg(1)
-
-    #st.line_chart(x=leg1.date(), y=leg1.amount())
+    cashflows = pd.DataFrame({
+                                 'date': cf.date(),
+                                 'amount': cf.amount()
+                             } for cf in swap.leg(1))
+    st.write('Cashflows')
+    st.line_chart(data=cashflows, x='date', y='amount')

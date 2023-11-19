@@ -4,14 +4,14 @@
 
 - Analytics based on [Quantlib](https://www.quantlib.org/)
 - Visualisation based on [Streamlit](https://streamlit.io/)
-
+- Python 3.10.13
 ### Virtual Environment setup
-1. > Install virtual environment :
-`conda env create -f environment.yml`
+1. > Create virtual environment :
+`python -m venv /path/to/new/virtual/environment`
 
-2. > pip install QuantLib=1.32
+2. > Activate virtual environment e.g.: `source  /Users/<username>/anaconda3/envs/Webapp/bin/activate`
 
-3> Activate virtual environment :
-`conda activate WebApp`
+3. > Install requirements :
+`pip install -r requirements.txt`
 
-4> To deactivate the environment use `conda deactivate`
+4. > Launch streamlit app : `Streamlit run swan_app.py`

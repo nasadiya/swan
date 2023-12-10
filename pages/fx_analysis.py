@@ -3,10 +3,8 @@ import streamlit as st
 import plotly.graph_objects as go
 from src.fx_corr import corr_data
 
-st.title('FX analysis')
 
-st.write('Forex correlations')
-st.write('Choose currencies')
+
 options = st.multiselect(
     'select currencies',
     json.load(open('./src/curcodes.json')),

@@ -1,4 +1,4 @@
-import re
+import re, io, zipfile
 import pandas as pd
 import datetime as dt
 import streamlit as st
@@ -12,6 +12,18 @@ time = 'Gmt time'
 time_bin = 'time_bin'
 time_periods = ["30s", "10s", "5s", "1s", "100ms", "10ms"]
 time_period_values = [30, 10, 5, 1, 0.1, 0.01]
+
+def create_zip(df_list):
+    buffer = io.BytesIO()  # In-memory buffer for the ZIP file
+    with zipfile.ZipFile(buffer, "w") as zf:
+        for index, df in enumerate(df_list):
+            csv = io.StringIO()
+            df.to_csv(csv, index=False)
+            zf.writestr("data"+str(index+1)+".csv", csv.getvalue())
+    
+    buffer.seek(0)  # Move to the start of the buffer
+    return buffer
+
 # App title
 st.title("Tick Analysis")
 
@@ -59,6 +71,7 @@ if uploaded_files:
         
         # filter the files for the timperiod required
         if (timeperiod is not None) and (variable is not None):
+            filtered_datasets = []
             timeperiod_value = time_period_values[time_periods.index(timeperiod)]
             fig = go.Figure()
             for index, file in enumerate(file_holder):
@@ -66,6 +79,7 @@ if uploaded_files:
                                    file_dates[index] + relativedelta(seconds=timeperiod_value)]
                 filter_range = (file[time]<=file_lookaheads[index]) & (file[time]>=file_lookbacks[index])
                 file_filtered = file.loc[filter_range,[time,variable]]
+                filtered_datasets.append(file.loc[filter_range,:])
                 file_filtered[time_bin] = file_filtered[time].dt.round(timeperiod)
                 file_filtered.drop(columns=time,inplace=True)
                 # create the full bin to which this must conform to 
@@ -115,3 +129,15 @@ if uploaded_files:
                 xaxis_rangeslider_visible=False,  # Add range slider for zooming (set to True if needed)
                 )
             st.plotly_chart(fig)
+
+            
+            # Create the ZIP file
+            zip_file = create_zip(filtered_datasets)
+            # Download button for the ZIP file
+            st.write("Download filtered Zip files : (filters - Event time, look ahead & lookback)")
+            st.download_button(
+                label="Download ",
+                data=zip_file,
+                file_name="filtered_tick_data.zip",
+                mime="application/zip"
+            )
